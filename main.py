@@ -1,5 +1,6 @@
 #Sofia Alejandra Beltran
 #Luis Francisco Garcia Aguilar
+import matplotlib.pyplot as plt
 import math
 def validarADN(secuencia): #es mas facil trabajar con funciones
     secuencia=secuencia.upper() #usamos solo mayus para mas facil
@@ -31,6 +32,10 @@ print(f"Porcentaje Guanina-Citosina (GC): {porcentajeGC:.2f}%")
 print(f"Cadena Complementaria: {cadenaComplementaria}")
 print(f"ARN Mensajero Transcrito: {secuenciaARN}")
 
+def traducirAminoacidos(secuenciaARN):
+    codones=[]
+    cadenaProteina=[]
+
 import random 
 def simularMutacion(secuencia, probabilidad):
     secuenciaMutada=""
@@ -43,6 +48,38 @@ for nucleotido in secuencia:
     else:
         secuenciaMutada += nucleotido
 return secuenciaMutada
+
+def exportarYGraficar(secuencia, conteoA, conteoC, conteoG, conteoT, porcentajeGC):
+    nombreArchivo="Reporte Bioinformatico.txt"
+    try:
+        with open(nombreArchivo, "w") as archivo:
+            archivo.write("REPORTE BIOINFORMATICO\n")
+            archivo.write(f"Secuencia Analizada: {secuencia}\n")
+            archivo.write(f"Longitud Total: {len(secuencia)} pares de bases.\n\n")
+            archivo.write(f"---CONTEO DE NUCLEOTIDOS---\N")
+            archivo.write(f"Adenina (A): {conteoA}\n")
+            archivo.write(f"Citosina (C): {conteoC}\n")
+            archivo.write(f"Guanina (G): {conteoG}\n")
+            archivo.write(f"Tiamina (T): {conteoT}\n")
+            archivo.write(f"Estabilidad Termica (Contenido GC): {porcentajeGC:.2f}%\n")
+        print(f"Exito. Reporte textual guardado en '{nombreArchivo}'.")
+    except Exception as e:
+        print(f"Error. No se puede guardar el archivo: {e}")
+    
+    bases=['Adenina (A)', 'Citosina (C)', 'Guanina (G)', 'Timina (T)']
+    frecuencias=[conteoA, conteoC, conteoG, conteoT]
+    colores = ["#E24AADEC", "#5072E3", "#B3F523", '#D0021B']
+    plt.figure(figuresize=(8, 5))
+    plt.bar(bases, frecuencias, color=colores)
+    plt.title('Frecuencia de Nucleotidos en la Secuencia', fontsize=14)
+    plt.xlabel('Bases Nitrogenadas', fontsize=12)
+    plt.ylabel('Cantidad', fontsize=12)
+    print("Abriendo ventana de visualización gráfica...")
+    plt.show()
+
+                          
+
+
 
 #modulo del menu
 def main():
@@ -105,4 +142,3 @@ def main():
             print("Opcion no valida. Intente de nuevo o seleccione nuevamente.")
 if __name__=="__main__":
     main()
-  

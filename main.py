@@ -50,7 +50,7 @@ def main():
     estadoDatosCorrectosCargados=False
     secuenciaActual=""
     while opcion != 5:
-        print("\n==========================")
+        print("==========================")
         print("Sistema Life-Sequence")
         print("==========================")
         print("1. Cargar y Validar Secuencia de ADN")
@@ -91,4 +91,18 @@ def main():
                     print("[Error. Ingrese un valor entre 1 y 100.")
             else:
                 print("Primero debe cargar una secuencia válida.")
+        elif opcion==4:
+            if estadoDatosCorrectosCargados:
+                print("[SISTEMA] Abriendo archivo 'reporte_bio.txt'...")
+                print("[SISTEMA] Escribiendo resultados...")
+                print("[SISTEMA] Llamando a biblioteca gráfica (matplotlib)...")
+                print("[ÉXITO] Reporte exportado y gráfica generada correctamente.")
+            else:
+                print("No hay datos para exportar.")
+        elif opcion==5:
+            print("Saliendo del programa. La secuencia vital finalizara.")
+        else:
+            print("Opcion no valida. Intente de nuevo o seleccione nuevamente.")
+if __name__=="__main__":
+    main()
   

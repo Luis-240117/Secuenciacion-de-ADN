@@ -58,3 +58,37 @@ def main():
         print("3. Simular Mutaciones Aleatorias")
         print("4. Exportar Reporte y Graficar")
         print("5. Salir")
+        try:
+            opcion=int(input("seleccione una opcion: "))
+        except ValueError:
+            print("Error. Por favor ingrese un numero.")
+            continue
+
+        if opcion == 1:
+            entrada=input("Ingrese la secuencia de ADN usando adenina, citosina, guanina y tiamina:")
+            if validarADN(entrada):
+                print("Secuencia Valida")
+                secuenciaActual=entrada.upper()
+                estadoDatosCorrectosCargados=True
+            else:
+                print("Error. La secuencia contiene caracteres no validos.")
+                estadoDatosCorrectosCargados=False
+        elif opcion==2:
+            if estadoDatosCorrectosCargados:
+                analizarADN(secuenciaActual)
+            else:
+                print("Se debe cargar una secuencia valida. Visite opcion 1.")
+        elif opcion==3:
+            if estadoDatosCargadosCorrectamente:
+                probabilidad=int(input("Ingrese la probabilidad de mutacion (1 a 100%): "))
+                if 1<=probabilidad<=100:
+                    secuenciaResultado=simularMutacion(secuenciaActual, probabilidad)
+                    print(f"Secuencia Original: {secuenciaActual}")
+                    print(f"Secuencia Mutada:   {secuenciaResultado}")
+                    print("-> Análisis de la secuencia mutada:")
+                    analizar_adn(secuenciaResultado)
+                else:
+                    print("[Error. Ingrese un valor entre 1 y 100.")
+            else:
+                print("Primero debe cargar una secuencia válida.")
+  

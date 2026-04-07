@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import math
 import random
-#trabajon en funciones
+#trabajan en funciones
 def validarADN(secuencia): #validaciones
     secuencia = secuencia.upper() #usamos solo mayusculas para evitar errores
     caracteresValidos = ["A", "C", "G", "T"]
@@ -159,3 +159,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+funcion nueva=huele a culo

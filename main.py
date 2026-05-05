@@ -1,162 +1,250 @@
-# Sofia Alejandra Beltran
-# Luis Francisco Garcia Aguilar
-import matplotlib.pyplot as plt #biblioteca grafica que nos va a permitir producir las graficas.
-import math
-import random #biblioteca que nos permite generar numeros al azar.
-#trabajan en funciones
-def validarADN(secuencia): #validaciones
-    secuencia = secuencia.upper() #usamos solo mayusculas para evitar errores
-    caracteresValidos = ["A", "C", "G", "T"] #definicion de los valores que vamos a permitir que se ingresen al programa
-    for nucleotido in secuencia: #ciclo if que leera base por base e ira validando que esten en la lista de valores aceptables.
+#Luis Francisco Garcia Aguilar
+#Sofia Alejandra Beltran Reyes
+
+import streamlit as st
+import matplotlib.pyplot as plt
+import random
+
+codigoGeneticoCompleto = {
+    'UUU': 'Fenilalanina', 'UUC': 'Fenilalanina', 'UUA': 'Leucina', 'UUG': 'Leucina',
+    'CUU': 'Leucina', 'CUC': 'Leucina', 'CUA': 'Leucina', 'CUG': 'Leucina',
+    'AUU': 'Isoleucina', 'AUC': 'Isoleucina', 'AUA': 'Isoleucina', 'AUG': 'Metionina(Inicio)',
+    'GUU': 'Valina', 'GUC': 'Valina', 'GUA': 'Valina', 'GUG': 'Valina',
+    'UCU': 'Serina', 'UCC': 'Serina', 'UCA': 'Serina', 'UCG': 'Serina', 'AGU': 'Serina', 'AGC': 'Serina',
+    'CCU': 'Prolina', 'CCC': 'Prolina', 'CCA': 'Prolina', 'CCG': 'Prolina',
+    'ACU': 'Treonina', 'ACC': 'Treonina', 'ACA': 'Treonina', 'ACG': 'Treonina',
+    'GCU': 'Alanina', 'GCC': 'Alanina', 'GCA': 'Alanina', 'GCG': 'Alanina',
+    'UAU': 'Tirosina', 'UAC': 'Tirosina', 'UAA': 'Stop', 'UAG': 'Stop', 'UGA': 'Stop',
+    'CAU': 'Histidina', 'CAC': 'Histidina', 'CAA': 'Glutamina', 'CAG': 'Glutamina',
+    'AAU': 'Asparagina', 'AAC': 'Asparagina', 'AAA': 'Lisina', 'AAG': 'Lisina',
+    'GAU': 'Ácido Aspártico', 'GAC': 'Ácido Aspártico', 'GAA': 'Ácido Glutámico', 'GAG': 'Ácido Glutámico',
+    'UGU': 'Cisteína', 'UGC': 'Cisteína', 'UGG': 'Triptófano',
+    'CGU': 'Arginina', 'CGC': 'Arginina', 'CGA': 'Arginina', 'CGG': 'Arginina', 'AGA': 'Arginina', 'AGG': 'Arginina',
+    'GGU': 'Glicina', 'GGC': 'Glicina', 'GGA': 'Glicina', 'GGG': 'Glicina'
+}
+
+
+def validarADN(secuencia):
+    secuencia = secuencia.upper()
+    caracteresValidos = ["A", "C", "G", "T"]
+    for nucleotido in secuencia:
         if nucleotido not in caracteresValidos:
             return False
     return True
 
-
-def analizarADN(secuencia): #conteos de cada una de las bases.
+def analizarADN(secuencia):
     secuencia = secuencia.upper()
-    conteoA = secuencia.count('A') #contadores para cada una de las bases.
+    conteoA = secuencia.count('A')
     conteoC = secuencia.count('C')
     conteoG = secuencia.count('G')
     conteoT = secuencia.count('T')
+    
+    complementoMap = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C'}
+    cadenaComplementaria = "".join([complementoMap[base] for base in secuencia])
+    secuenciaARN = secuencia.replace('T', 'U')
+    longitud = len(secuencia)
+    porcentajeGC = ((conteoG + conteoC) / longitud) * 100 if longitud > 0 else 0.0
+    
+    return conteoA, conteoC, conteoG, conteoT, porcentajeGC, cadenaComplementaria, secuenciaARN
 
-    complementoMap = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C'} #hacemos una especie de diccionario con lo que fijamos cada letra con tu base correspondiente.
-    cadenaComplementaria = ""
-
-    for base in secuencia: #ya con el diccionario podemos generar el ciclo for para que recorra la cadena y llamamos al diccionario que generamos anteriormente.
-        cadenaComplementaria += complementoMap[base]
-
-    secuenciaARN = secuencia.replace('T', 'U') #generamos la cadena de arn, en donde reemplazamos cada tiamina por un uracilo.
-
-    longitud = len(secuencia) #aqui guardamos la longitud de la secuencia ingresada.
-    porcentajeGC = ((conteoG + conteoC) / longitud) * 100 if longitud > 0 else 0.0 #con esto calculamos el porcentajde de GC que hay dentro de la secuencia, con esto nos podemos dar idea de la estabilidad termica de la secuencia ya que la guanina y citosina formas un triple enlace a diferencia de adenina timina que solo forma un enlace doble.
-
-    print("RESULTADOS DEL ANÁLISIS") #print de todo lo que calculamos o produjimos.
-    print(f"Conteo = Adenina: {conteoA} | Citosina: {conteoC} | Guanina: {conteoG} | Timina: {conteoT}")
-    print(f"Porcentaje Guanina-Citosina (GC): {porcentajeGC:.2f}%")
-    print(f"Cadena Complementaria: {cadenaComplementaria}")
-    print(f"ARN Mensajero Transcrito: {secuenciaARN}")
-
-    return conteoA, conteoC, conteoG, conteoT, porcentajeGC #la devolucion de la informacion que se genero dentro de la funcion. Esta se puede usar posteriormente. Por cierto una funcion siempre te debe devolver un valor, ya sea numerico o booleano, pero siempre te regresa algo.
-
+def calcularMetricasExtra(secuencia, conteoA, conteoC, conteoG, conteoT):
+    # Temperatura de Fusión (Regla de Wallace)
+    tm = (2 * (conteoA + conteoT)) + (4 * (conteoG + conteoC))
+    
+    # Peso molecular aproximado en g/mol para ADN monocatenario
+    pesoMolecular = (conteoA * 313.2) + (conteoC * 289.2) + (conteoG * 329.2) + (conteoT * 304.2) - 61.96
+    
+    # Complemento Inverso
+    complementoMap = {'A': 'T', 'T': 'A', 'C': 'G', 'G': 'C'}
+    cadenaComplementaria = "".join([complementoMap[base] for base in secuencia])
+    complementoInverso = cadenaComplementaria[::-1] # Invierte el orden de 3' a 5'
+    
+    return tm, pesoMolecular, complementoInverso
 
 def traducirAminoacidos(secuenciaARN):
     codones = []
-    cadenaProteina = ""
+    cadenaProteina = []
     
-    return cadenaProteina
+    # Busca un codon de inicio.
+    inicioCodon = secuenciaARN.find('AUG')
+    if inicioCodon == -1:
+        inicioCodon = 0 
+        
+    for i in range(inicioCodon, len(secuenciaARN) - 2, 3):
+        codonActual = secuenciaARN[i:i+3]
+        codones.append(codonActual)
+        aminoacidoResultante = codigoGeneticoCompleto.get(codonActual, 'Desconocido')
+        cadenaProteina.append(aminoacidoResultante)
+        
+        if aminoacidoResultante == 'Stop':
+            break # Termina al encontrar un codon de parada.
+                
+    return codones, cadenaProteina
 
-
-def simularMutacion(secuencia, probabilidad): #funcion con la cual simulamos las mutaciones dentro de una cadena.
-    secuenciaMutada = "" #cadena vacia en donde se ira guardando la nueva cadena mutada.
-    basesPosibles = ['A', 'C', 'G', 'T'] #de nuevo nuestra lista de posibles bases.
-    
-    for nucleotido in secuencia: #este for juega con la probabilidad que ingresa el usuario y los numeros producidos al azar para ir haciendole cambios a la cadena original.
+def simularMutacion(secuencia, probabilidad):
+    secuenciaMutada = ""
+    basesPosibles = ['A', 'C', 'G', 'T']
+    for nucleotido in secuencia:
         probGenerada = random.randint(1, 100)
         if probGenerada <= probabilidad:
-            nuevaBase = random.choice(basesPosibles)
-            secuenciaMutada += nuevaBase
+            secuenciaMutada += random.choice(basesPosibles)
         else:
             secuenciaMutada += nucleotido
+    return secuenciaMutada
 
-    return secuenciaMutada #la funcion nos devuelve la cadena mutada.
+def generarFASTA(secuencia, nombreSecuencia="Secuencia_Analizada_Life_Sequence"):
+    formatoFasta = f">{nombreSecuencia}\n"
+    fragmentosFasta = [secuencia[i:i+80] for i in range(0, len(secuencia), 80)]
+    formatoFasta += "\n".join(fragmentosFasta)
+    return formatoFasta
 
+# ==========================================
+# 3. INTERFAZ GRÁFICA CON STREAMLIT
+# ==========================================
+st.set_page_config(page_title="Sistema Life-Sequence", page_icon="🧬", layout="wide")
 
-def exportarYGraficar(secuencia, conteoA, conteoC, conteoG, conteoT, porcentajeGC): #aqui yo tampoco le se mucho pero es la biblioteca que genera los graficos.
-    nombreArchivo = "Reporte Bioinformatico.txt" #nombre que tendra el archivo que se va a generar.
-    try: #lo hacemos con un try para que no se caiga el programa en dado caso de que no se pueda generar el archivo.
-        with open(nombreArchivo, "w") as archivo: #abre el archivo sobre el cual va a escribir y lo hace en modo de "escritura".
-            archivo.write("REPORTE BIOINFORMATICO\n") #todo esto que dice "archivo.write" se escribira directamente sobre el archivo que se abrio, linea por lines, sera un documento .txt
-            archivo.write(f"Secuencia Analizada: {secuencia}\n")
-            archivo.write(f"Longitud Total: {len(secuencia)} pares de bases.\n\n")
-            archivo.write(f"---CONTEO DE NUCLEOTIDOS---\n")
-            archivo.write(f"Adenina (A): {conteoA}\n")
-            archivo.write(f"Citosina (C): {conteoC}\n")
-            archivo.write(f"Guanina (G): {conteoG}\n")
-            archivo.write(f"Timina (T): {conteoT}\n")
-            archivo.write(f"Estabilidad Termica (Contenido GC): {porcentajeGC:.2f}%\n")
+st.title("🧬 Sistema Life-Sequence")
+st.markdown("Plataforma interactiva para el análisis bioinformático de secuencias de ADN.")
 
-        print(f"Éxito. Reporte textual guardado en '{nombreArchivo}'.") #maneja de manera segura el cierre del archivo.
-    except Exception as e: #si no se puede abrir el archivo podremos ver un mensaje de error.
-        print(f"Error. No se puede guardar el archivo: {e}")
+# Inicializar variable de sesion
+if "secuenciaActual" not in st.session_state:
+    st.session_state.secuenciaActual = ""
 
-    bases = ['Adenina (A)', 'Citosina (C)', 'Guanina (G)', 'Timina (T)'] 
-    frecuencias = [conteoA, conteoC, conteoG, conteoT]
-    colores = ["#E24AADEC", "#5072E3", "#B3F523", '#D0021B']
+# --- PANEL LATERAL ---
+st.sidebar.header("1. Carga de Datos")
+entradaAdn = st.sidebar.text_area("Ingrese la secuencia de ADN:", value=st.session_state.secuenciaActual)
 
-    plt.figure(figsize=(8, 5)) #tamaño del lienzo en pulgadas.
-    plt.bar(bases, frecuencias, color=colores) #le decimos que genere una grafica de barras.
-    plt.title('Frecuencia de Nucleotidos en la Secuencia', fontsize=14) #titulo del grafico
-    plt.xlabel('Bases Nitrogenadas', fontsize=12)
-    plt.ylabel('Cantidad', fontsize=12)
-    print("Abriendo ventana de visualización gráfica...") #mansaje de aviso
-    plt.show() #pedimos que se muestre el grafico en una ventana.
-
-
-#modulo menu
-def main():
-    opcion = 0 #opciones del menu inicializadas en cero
-    estadoDatosCorrectosCargados = False #es el estado que nos va a permitir corroborar que los datos ingresados sean correctos.
-    secuenciaActual = "" #cadena vacia en donde se ira guardando la secuencia que ingrese el usuario
-
-    while opcion != 5:
-        print("==========================")
-        print("Sistema Life-Sequence")
-        print("==========================")
-        print("1. Cargar y Validar Secuencia de ADN")
-        print("2. Analizar Secuencia Actual")
-        print("3. Simular Mutaciones Aleatorias")
-        print("4. Exportar Reporte y Graficar")
-        print("5. Salir")
-
-        try:
-            opcion = int(input("Seleccione una opción: "))
-        except ValueError:
-            print("Error. Por favor ingrese un número.")
-            continue
-
-        if opcion == 1:
-            entrada = input("Ingrese la secuencia de ADN: ")
-            if validarADN(entrada):
-                print("Secuencia válida.")
-                secuenciaActual = entrada.upper()
-                estadoDatosCorrectosCargados = True
-            else:
-                print("Error. La secuencia contiene caracteres no válidos.")
-                estadoDatosCorrectosCargados = False
-
-        elif opcion == 2:
-            if estadoDatosCorrectosCargados:
-                conteoA, conteoC, conteoG, conteoT, porcentajeGC = analizarADN(secuenciaActual)
-            else:
-                print("Se debe cargar una secuencia válida. Use la opción 1.")
-
-        elif opcion == 3:
-            if estadoDatosCorrectosCargados:
-                probabilidad = int(input("Ingrese la probabilidad de mutación (1-100%): "))
-                if 1 <= probabilidad <= 100:
-                    secuenciaResultado = simularMutacion(secuenciaActual, probabilidad)
-                    print(f"Secuencia Original: {secuenciaActual}")
-                    print(f"Secuencia Mutada:   {secuenciaResultado}")
-                else:
-                    print("Error. Ingrese un valor entre 1 y 100.")
-            else:
-                print("Primero debe cargar una secuencia válida.")
-
-        elif opcion == 4:
-            if estadoDatosCorrectosCargados:
-                conteoA, conteoC, conteoG, conteoT, porcentajeGC = analizarADN(secuenciaActual)
-                exportarYGraficar(secuenciaActual, conteoA, conteoC, conteoG, conteoT, porcentajeGC)
-            else:
-                print("No hay datos para exportar.")
-
-        elif opcion == 5:
-            print("Saliendo del programa.")
-
+if st.sidebar.button("Validar y Cargar Secuencia"):
+    if entradaAdn:
+        entradaLimpia = entradaAdn.replace(" ", "").replace("\n", "").upper()
+        if validarADN(entradaLimpia):
+            st.session_state.secuenciaActual = entradaLimpia
+            st.sidebar.success("¡Secuencia válida y cargada correctamente!")
         else:
-            print("Opción no válida. Intente de nuevo.")
+            st.sidebar.error("Error: La secuencia contiene caracteres no válidos. Solo use A, C, G, T.")
+    else:
+        st.sidebar.warning("Por favor, ingrese una secuencia primero.")
 
+# --- PESTAÑAS PRINCIPALES ---
+if st.session_state.secuenciaActual:
+    tabUno, tabDos, tabTres = st.tabs(["📊 Análisis Principal", "🧪 Traducción a Proteínas", "🧬 Simulación de Mutaciones"])
+    
+    secuenciaEvaluada = st.session_state.secuenciaActual
+    
+    # Análisis de los datos base
+    conteoAdenina, conteoCitosina, conteoGuanina, conteoTimina, porcentajeGlobalGC, cadenaComp, arnMensajero = analizarADN(secuenciaEvaluada)
+    temperaturaFusion, pesoMol, complementoInv = calcularMetricasExtra(secuenciaEvaluada, conteoAdenina, conteoCitosina, conteoGuanina, conteoTimina)
+    
+    # ----------------------------------------------------------------------
+    # PESTAÑA 1: ANÁLISIS PRINCIPAL
+    # ----------------------------------------------------------------------
+    with tabUno:
+        st.header("Resultados del Análisis Estructural")
+        st.write(f"**Secuencia Original:** `{secuenciaEvaluada}`")
+        
+        #Metricas nucleotidos.
+        columnaUno, columnaDos, columnaTres, columnaCuatro, columnaCinco = st.columns(5)
+        columnaUno.metric("Adenina (A)", conteoAdenina)
+        columnaDos.metric("Timina (T)", conteoTimina)
+        columnaTres.metric("Citosina (C)", conteoCitosina)
+        columnaCuatro.metric("Guanina (G)", conteoGuanina)
+        columnaCinco.metric("Porcentaje GC", f"{porcentajeGlobalGC:.2f}%")
+        
+        st.markdown("---")
+        
+        #Metricas Fisicoquimicas
+        st.subheader("Propiedades Biofísicas")
+        colMetricaUno, colMetricaDos, colMetricaTres = st.columns(3)
+        colMetricaUno.metric("Temperatura de Fusión (Tm)", f"{temperaturaFusion} °C")
+        colMetricaDos.metric("Peso Molecular Estimado", f"{pesoMol:.2f} g/mol")
+        colMetricaTres.metric("Longitud Total", f"{len(secuenciaEvaluada)} pb")
+        
+        st.markdown("---")
+        
+        # Textos de cadenas relacionadas.
+        st.write(f"**Cadena Complementaria:** `{cadenaComp}`")
+        st.write(f"**Complemento Inverso (3' a 5'):** `{complementoInv}`")
+        st.write(f"**ARN Mensajero Transcrito:** `{arnMensajero}`")
+        
+        st.markdown("---")
+        
+        # Graficas y botones de descarga.
+        colGrafica, colDescargas = st.columns([2, 1])
+        
+        with colGrafica:
+            st.subheader("Frecuencia de Nucleótidos")
+            basesNitrogenadas = ['Adenina (A)', 'Citosina (C)', 'Guanina (G)', 'Timina (T)']
+            frecuenciasBases = [conteoAdenina, conteoCitosina, conteoGuanina, conteoTimina]
+            coloresGrafica = ["#E24ADE", "#5072E3", "#B3F523", '#D0021B']
+            
+            figuraGrafico, ejeGrafico = plt.subplots(figsize=(6, 4))
+            ejeGrafico.bar(basesNitrogenadas, frecuenciasBases, color=coloresGrafica)
+            ejeGrafico.set_ylabel('Cantidad')
+            st.pyplot(figuraGrafico)
+            
+        with colDescargas:
+            st.subheader("Exportar Datos")
+            st.write("Guarda tus resultados para análisis posteriores.")
+            
+            # Generar TXT
+            reporteTxt = f"""REPORTE BIOINFORMATICO - LIFE SEQUENCE
+======================================
+Secuencia Original: {secuenciaEvaluada}
+Longitud: {len(secuenciaEvaluada)} pb
+Porcentaje GC: {porcentajeGlobalGC:.2f}%
+Temperatura de Fusión (Tm): {temperaturaFusion} °C
+Peso Molecular: {pesoMol:.2f} g/mol
+ARN Mensajero: {arnMensajero}
+Complemento Inverso: {complementoInv}
+======================================"""
+            
+            st.download_button("📥 Descargar Reporte (.txt)", data=reporteTxt, file_name="Reporte_Bioinformatico.txt", mime="text/plain", use_container_width=True)
+            
+            # Generar FASTA
+            fastaTxt = generarFASTA(secuenciaEvaluada)
+            st.download_button("🧬 Descargar formato FASTA", data=fastaTxt, file_name="secuencia.fasta", mime="text/plain", use_container_width=True)
 
-if __name__ == "__main__":
-    main()
+    # ----------------------------------------------------------------------
+    # PESTAÑA 2: TRADUCCIÓN A PROTEÍNAS
+    # ----------------------------------------------------------------------
+    with tabDos:
+        st.header("Predicción de Proteínas (ORF)")
+        st.write(f"**ARN Mensajero (Plantilla):** `{arnMensajero}`")
+        
+        listaCodones, listaProteina = traducirAminoacidos(arnMensajero)
+        
+        if listaProteina:
+            st.success("Traducción completada con éxito.")
+            st.write("**Secuencia de Codones procesados:**")
+            st.code(" - ".join(listaCodones))
+            
+            st.write("**Secuencia de Aminoácidos (Cadena Polipeptídica):**")
+            st.info(" - ".join(listaProteina))
+            
+            if 'Stop' in listaProteina:
+                st.caption("Nota: La traducción se detuvo al encontrar un codón de parada (Stop).")
+        else:
+            st.warning("No se generaron aminoácidos. Asegúrese de que la secuencia tenga la longitud suficiente.")
 
+    # ----------------------------------------------------------------------
+    # PESTAÑA 3: MUTACIONES
+    # ----------------------------------------------------------------------
+    with tabTres:
+        st.header("Simulación de Mutaciones Aleatorias")
+        st.markdown("Aplica una tasa de mutación puntual (sustitución) a la secuencia actual.")
+        
+        probabilidadMutacion = st.slider("Probabilidad de mutación por nucleótido (%)", min_value=1, max_value=100, value=10)
+        
+        if st.button("Generar Mutación"):
+            secuenciaResultado = simularMutacion(secuenciaEvaluada, probabilidadMutacion)
+            
+            st.write(f"**Secuencia Original:** `{secuenciaEvaluada}`")
+            st.write(f"**Secuencia Mutada:**   `{secuenciaResultado}`")
+            
+            # Contar diferencias reales generadas
+            cantidadDiferencias = sum(1 for a, b in zip(secuenciaEvaluada, secuenciaResultado) if a != b)
+            porcentajeDiferencia = (cantidadDiferencias / len(secuenciaEvaluada)) * 100
+            
+            st.warning(f"Se detectaron **{cantidadDiferencias}** mutaciones ({porcentajeDiferencia:.1f}%) respecto a la secuencia original.")
+else:
+    st.info("👈 Por favor, ingresa y valida una secuencia de ADN válida en el panel lateral para comenzar el análisis.")
